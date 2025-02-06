@@ -70,13 +70,13 @@ Users can send one-on-one private messages.
 
 🔹 6. MongoDB Records
 All messages and user data are stored in MongoDB.
-✅ Group Chat Messages
+Group Chat Messages
 ![mongodb Screenshot](screenshots/mongodb.png)
 
-✅ Private Messages
+Private Messages
 ![mongodb Screenshot](screenshots/mongodb1.png)
 
-✅ User Data
+User Data
 ![mongodb Screenshot](screenshots/mongodb2.png)
 
 
