@@ -38,6 +38,11 @@ The application supports **group chats**, **private messaging**, and **real-time
 
 ---
 
+<<<<<<< HEAD
+=======
+## Output (Screenshots)
+
+>>>>>>> 7fcc1db (Picture Added)
 📸 Screenshots
 🔹 1. Sign-Up Page (SignUp.html)
 Users can create an account on this page.
