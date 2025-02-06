@@ -46,36 +46,42 @@ You can Add new Users from here.
 ![SignUp Screenshot](screenshots/signup.png)
 
 2. Login.html
+
 This is a Login Page 
 ![Login Screenshot](screenshots/login.png)
 
 3. Index.html 
-・This is Index page where you can select chatting types.
+
+This is Index page where you can select chatting types.
 ![Index Screenshot](screenshots/Index.png)
 
-・Types of Chat Room
+Types of Chat Room
 ![Index2 Screenshot](screenshots/Index2.png)
 
-・Users for Private Chatting
+Users for Private Chatting
 ![Index3 Screenshot](screenshots/Index3.png)
 
 4. Chat.html
+
 This is a page where you can send messages in  group chat. 
 ![GroupChat Screenshot](screenshots/chat.png)
 
 5. Private_chat.html
+
 This is a page where you can send private messages (1 to 1).
 ![PrivateChat Screenshot](screenshots/private_chat.png)
 
 6. MongoDB Record
+
 This is mongodb database records. 
-・Group messages
+
+Group messages
 ![mongodb Screenshot](screenshots/mongodb.png)
 
-・Private messages
+Private messages
 ![mongodb Screenshot](screenshots/mongodb1.png)
 
-・Users 
+Users 
 ![mongodb Screenshot](screenshots/mongodb2.png)
 
 
