@@ -38,58 +38,45 @@ The application supports **group chats**, **private messaging**, and **real-time
 
 ---
 
-## Output (Screenshots)
-
-1. SignUp.html
-This is a SignUp page. 
-You can Add new Users from here. 
+📸 Screenshots
+🔹 1. Sign-Up Page (SignUp.html)
+Users can create an account on this page.
 ![SignUp Screenshot](screenshots/signup.png)
 
-2. Login.html
-
-This is a Login Page 
+🔹 2. Login Page (Login.html)
+Users log in to access the chat system.
 ![Login Screenshot](screenshots/login.png)
 
-3. Index.html 
-
-This is Index page where you can select chatting types.
+🔹 3. Home Page (Index.html)
+Users can select a chat type: group or private chat.
 ![Index Screenshot](screenshots/Index.png)
 
-Types of Chat Room
+➤ Chat Room Selection
+Users can choose different chat rooms.
 ![Index2 Screenshot](screenshots/Index2.png)
 
-Users for Private Chatting
+➤ Private Chat User List
+Users available for private messaging.
 ![Index3 Screenshot](screenshots/Index3.png)
 
-4. Chat.html
-
-This is a page where you can send messages in  group chat. 
+🔹 4. Group Chat (Chat.html)
+Users can send and receive messages in a shared chat room.
 ![GroupChat Screenshot](screenshots/chat.png)
 
-5. Private_chat.html
-
-This is a page where you can send private messages (1 to 1).
+🔹 5. Private Chat (Private_chat.html)
+Users can send one-on-one private messages.
 ![PrivateChat Screenshot](screenshots/private_chat.png)
 
-6. MongoDB Record
-
-This is mongodb database records. 
-
-Group messages
+🔹 6. MongoDB Records
+All messages and user data are stored in MongoDB.
+✅ Group Chat Messages
 ![mongodb Screenshot](screenshots/mongodb.png)
 
-Private messages
+✅ Private Messages
 ![mongodb Screenshot](screenshots/mongodb1.png)
 
-Users 
+✅ User Data
 ![mongodb Screenshot](screenshots/mongodb2.png)
-
-
-
-
-
-
-
 
 
 ## 🚀 How to Run the Application
