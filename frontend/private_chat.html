@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Chat</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .typing-indicator {
+            font-size: 12px;
+            color: gray;
+            height: 20px;
+        }
+        .input-container {
+            display: flex;
+            gap: 5px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #leave-btn {
+            margin-top: 10px;
+            background-color: #e74c3c;
+        }
+        #leave-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Private Chat with <span id="chat-partner"></span></h2>
+        <div class="chat-box" id="chat-box"></div>
+        <p class="typing-indicator" id="typing-indicator"></p>
+        <div class="input-container">
+            <input type="text" id="message" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+        <button id="leave-btn">Leave Room</button>
+    </div>
+
+    <script>
+        const socket = io("http://localhost:5000");
+        const username = localStorage.getItem("username") || "Guest";
+        const toUser = localStorage.getItem("privateChatUser") || "Unknown User";
+
+        $("#chat-partner").text(toUser);
+
+        let typingTimeout;
+
+        // Load chat history
+        function loadChatHistory() {
+            $.get(`http://localhost:5000/api/private-messages/${username}/${toUser}`, (messages) => {
+                messages.forEach(msg => {
+                    $("#chat-box").append(`<p><strong>${msg.from_user}:</strong> ${msg.message}</p>`);
+                });
+            }).fail(() => {
+                alert("Failed to load chat history.");
+            });
+        }
+
+        $(document).ready(() => {
+            loadChatHistory();
+
+            $("#send-btn").click(() => {
+                const message = $("#message").val().trim();
+                if (message !== "") {
+                    socket.emit("privateMessage", { from_user: username, to_user: toUser, message });
+                    $("#chat-box").append(`<p><strong>You:</strong> ${message}</p>`);
+                    $("#message").val("");
+                    $("#typing-indicator").text("");
+                }
+            });
+
+            $("#message").on("input", () => {
+                $("#typing-indicator").text("You are typing...");
+                clearTimeout(typingTimeout);
+                
+                socket.emit("typingIndicator", { from_user: username, to_user: toUser });
+
+                typingTimeout = setTimeout(() => {
+                    $("#typing-indicator").text("");
+                }, 2000);
+            });
+
+            socket.on("receivePrivateMessage", (data) => {
+                $("#chat-box").append(`<p><strong>${data.from_user}:</strong> ${data.message}</p>`);
+            });
+
+            socket.on("typingIndicator", (data) => {
+                $("#typing-indicator").text(`${data.from_user} is typing...`);
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    $("#typing-indicator").text("");
+                }, 2000);
+            });
+
+            // Leave Room
+            $("#leave-btn").click(() => {
+                socket.emit("leaveRoom", { username, toUser });
+                localStorage.removeItem("privateChatUser");
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+</body>
+</html>

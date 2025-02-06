@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room Selection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+            margin-bottom: 20px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #logout-btn {
+            background-color: #e74c3c;
+            margin-top: 10px;
+        }
+        #logout-btn:hover {
+            background-color: #c0392b;
+        }
+        #start-private-chat {
+            background-color: #28a745;
+        }
+        #start-private-chat:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Select a Chat Room</h2>
+        <select id="room">
+            <option value="devops">DevOps</option>
+            <option value="cloud">Cloud Computing</option>
+            <option value="sports">Sports</option>
+            <option value="nodejs">Node.js</option>
+        </select>
+        <button id="join-room-btn">Join Room</button>
+    </div>
+
+    <div class="container">
+        <h2>Start Private Chat</h2>
+        <select id="user-list"></select>
+        <button id="start-private-chat">Start Private Chat</button>
+    </div>
+
+    <div class="container">
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <script>
+        $(document).ready(() => {
+            $.get("http://localhost:5000/api/users", (users) => {
+                if (users.length === 0) {
+                    alert("No users available.");
+                    return;
+                }
+                $("#user-list").empty();
+                users.forEach(user => {
+                    $("#user-list").append(new Option(user.username, user.username));
+                });
+            }).fail(() => {
+                alert("Failed to load user list.");
+            });
+
+            $("#join-room-btn").click(() => {
+                const room = $("#room").val();
+                localStorage.setItem("room", room);
+                window.location.href = "chat.html";
+            });
+
+            $("#start-private-chat").click(() => {
+                const toUser = $("#user-list").val();
+                localStorage.setItem("privateChatUser", toUser);
+                window.location.href = "private_chat.html";
+            });
+
+            $("#logout-btn").click(() => {
+                localStorage.removeItem("username");
+                localStorage.removeItem("room");
+                localStorage.removeItem("privateChatUser");
+                alert("You have logged out.");
+                window.location.href = "login.html";
+            });
+        });
+    </script>
+</body>
+</html>

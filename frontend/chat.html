@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .chat-container {
+            width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .chat-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .chat-message {
+            background: #ecf0f1;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            max-width: 80%;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .input-container button {
+            margin-left: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .input-container button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Chat Room: <span id="room-name"></span></div>
+        <div class="chat-box" id="chat-box"></div>
+
+        <div class="input-container">
+            <input type="text" id="message" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+
+
+
+        <!-- Leave Room -->
+        <button id="leave-room-btn" style="margin-top: 10px; background-color: #e74c3c;">Leave Room</button>
+    </div>
+
+    <script>
+        const socket = io("http://localhost:5000");
+    
+        $(document).ready(() => {
+            const username = localStorage.getItem("username");
+            const room = localStorage.getItem("room");
+            $("#room-name").text(room);
+    
+            socket.emit("joinRoom", { username, room });
+    
+            socket.on("loadHistory", (messages) => {
+            $("#chat-box").html("");  
+            messages.forEach(msg => {
+                $("#chat-box").append(`<p><strong>${msg.from_user}:</strong> ${msg.message}</p>`);
+            });
+        });
+    
+            $("#send-btn").click(() => {
+                const message = $("#message").val().trim();
+                if (message !== "") {
+                    socket.emit("sendMessage", { username, room, message });
+                    $("#message").val("");
+                }
+            });
+    
+            $("#send-private-btn").click(() => {
+                const to_user = $("#private-to").val().trim();
+                const message = $("#private-message").val().trim();
+    
+                if (to_user !== "" && message !== "") {
+                    socket.emit("sendPrivateMessage", { from_user: username, to_user, message });
+                    $("#private-message").val("");
+                } else {
+                    alert("Please enter recipient and message.");
+                }
+            });
+    
+            socket.on("message", (data) => {
+                $("#chat-box").append(`<p><strong>${data.from_user}:</strong> ${data.message}</p>`);
+            });
+    
+            socket.on("privateMessage", (data) => {
+                $("#chat-box").append(`<p style="color: red;"><strong>[PRIVATE] ${data.from_user}:</strong> ${data.message}</p>`);
+            });
+    
+            $("#message").on("input", () => {
+                socket.emit("typing", { username, room });
+            });
+    
+            let typingTimeout;
+            $("#message").on("blur", () => {
+                clearTimeout(typingTimeout);
+                socket.emit("stopTyping", { room });
+            });
+    
+            socket.on("displayTyping", (data) => {
+                clearTimeout(typingTimeout);
+                if (!$("#typing").length) {
+                    $("#chat-box").append(`<p id="typing">${data.username} is typing...</p>`);
+                }
+                typingTimeout = setTimeout(() => {
+                    $("#typing").remove();
+                }, 2000);
+            });
+    
+            socket.on("removeTyping", () => {
+                $("#typing").remove();
+            });
+    
+            $("#leave-room-btn").click(() => {
+                socket.emit("leaveRoom");
+                localStorage.removeItem("room");
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+    
+</body>
+</html>
