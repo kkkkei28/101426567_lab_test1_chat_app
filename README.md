@@ -38,6 +38,17 @@ The application supports **group chats**, **private messaging**, and **real-time
 
 ---
 
+## Output ( Screenshots)
+
+1. SignUp.html
+This is a SignUp page. 
+You can Add new Users from here. 
+![SignUp Screenshot](screenshots/signup.png)
+
+
+
+
+
 ## 🚀 How to Run the Application
 ### **1️⃣ Clone the Repository**
 ```sh
